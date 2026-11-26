@@ -443,7 +443,7 @@ pointer-events: none;
 </div>
 
     <!-- Awards -->
-    <div class="bg-zinc-50 pt-32 pb-12 border-b border-zinc-200">
+    <div class="bg-zinc-50 pt-12 lg:pt-32 pb-12 border-b border-zinc-200">
       <div class="max-w-7xl mx-auto px-6 md:px-12">
         <div
           class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500"
@@ -2088,5 +2088,47 @@ pointer-events: none;
     <script>
       (function(){const galleryImages=["https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/8c48d70c-2ff5-42c5-92c8-e115faba4fb3_1600w.webp?w=1600&q=90","https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=90","https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/be728f71-311b-496a-9860-5aa24025d28e_800w.jpg"];window.openLB=function(idx){const src=galleryImages[idx];if(!src)return;document.getElementById("lb-img").src=src;document.getElementById("lightbox").classList.remove("hidden");document.getElementById("lightbox").classList.add("flex");document.body.style.overflow="hidden";};window.sendChat=function(){const inp=document.getElementById("chat-inp");const val=inp.value.trim();if(!val)return;const msgs=document.getElementById("chat-msgs");const user=document.createElement("div");user.className="bg-zinc-900 text-white p-3 self-end max-w-[85%] rounded-l-md rounded-tr-md shadow-sm ml-auto";user.textContent=val;msgs.appendChild(user);inp.value="";msgs.scrollTop=msgs.scrollHeight;setTimeout(function(){const reply=document.createElement("div");reply.className="bg-white border border-zinc-200 p-3 self-start max-w-[85%] rounded-r-md rounded-bl-md text-zinc-700 shadow-sm";reply.textContent="Thank you. A team member will respond momentarily.";msgs.appendChild(reply);msgs.scrollTop=msgs.scrollHeight;},1000);};})();
     </script>
+        <script>
+  (function () {
+    var d = document;
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var fmt = function (x) { return x.getFullYear() + '-' + pad(x.getMonth() + 1) + '-' + pad(x.getDate()); };
+    var add = function (s, n) {
+      var p = s.split('-');
+      return fmt(new Date(+p[0], +p[1] - 1, +p[2] + n));
+    };
+    var today = fmt(new Date());
+    var tomorrow = add(today, 1);
+
+    // Datas em horário local + check-out sempre depois do check-in
+    function pair(a, b) {
+      var ci = d.getElementById(a), co = d.getElementById(b);
+      if (!ci || !co) return;
+      ci.min = today; ci.value = today;
+      co.min = tomorrow; co.value = tomorrow;
+      ci.addEventListener('change', function () {
+        if (!ci.value) return;
+        var next = add(ci.value, 1);
+        co.min = next;
+        if (!co.value || co.value < next) co.value = next;
+      });
+    }
+    pair('hero-ci', 'hero-co');
+    pair('modal-ci', 'modal-co');
+
+    // Leva as datas escolhidas no hero para o modal de reserva
+    var btn = d.getElementById('hero-check');
+    if (btn) btn.addEventListener('click', function () {
+      var hci = d.getElementById('hero-ci').value;
+      var hco = d.getElementById('hero-co').value;
+      if (!hci || !hco) return;
+      var mci = d.getElementById('modal-ci'), mco = d.getElementById('modal-co');
+      mci.value = hci;
+      mco.min = add(hci, 1);
+      mco.value = hco;
+    });
+  })();
+</script>
   </body>
+        
 </html>
